@@ -6,6 +6,8 @@
 
 ![Claim Audit Architecture](resources/architecture_diagram_v2.png)
 
+![System Overview](resources/image.png)
+
 This diagram illustrates the end-to-end flow of the ClaimAudit system, from data ingestion to final adjudication:
 
 1.  **Policy Ingestion (The Foundation)**:
