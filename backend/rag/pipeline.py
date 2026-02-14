@@ -167,7 +167,7 @@ def get_llm(temperature: float = 0.0):
     if settings.GOOGLE_API_KEY:
         try:
             llms.append(ChatGoogleGenerativeAI(
-                model="gemini-1.5-pro",
+                model="gemini-pro",
                 temperature=temperature,
                 google_api_key=settings.GOOGLE_API_KEY
             ))
