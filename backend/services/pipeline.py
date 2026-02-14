@@ -45,12 +45,13 @@ async def run_audit_pipeline(claim: ClaimInput) -> AuditOutput:
         print(f"✓ RAG Pipeline executed successfully for claim {claim.claim_id}")
         return result
     except ValueError as e:
-        # Re-raise ValueError (like missing policies) - these are user errors
+        # This is likely a "missing key" or "no policies" error
         print(f"✗ RAG Pipeline validation error: {e}")
-        raise
+        return _generate_mock_fallback(claim, reason="config_error", details=str(e))
     except Exception as e:
         # External service failure (Groq rate limit, network error, etc.)
         error_msg = str(e).lower()
+        print(f"✗ RAG Pipeline execution error: {e}")
         
         # Check if it's a rate limit or service unavailability error
         is_rate_limit = any(keyword in error_msg for keyword in [
@@ -59,27 +60,23 @@ async def run_audit_pipeline(claim: ClaimInput) -> AuditOutput:
         ])
         
         if is_rate_limit:
-            print(f"⚠️  External service rate limit hit: {e}")
-            print(f"⚠️  Returning mock data with clear user notification")
-            
-            # Return mock data with VERY CLEAR messaging
-            return _generate_mock_fallback(claim, reason="rate_limit")
+            return _generate_mock_fallback(claim, reason="rate_limit", details=str(e))
         else:
-            # Other errors - re-raise
-            print(f"✗ RAG Pipeline error: {e}")
-            raise Exception(f"RAG pipeline execution failed: {str(e)}")
+            return _generate_mock_fallback(claim, reason="general_error", details=str(e))
 
 
-def _generate_mock_fallback(claim: ClaimInput, reason: str = "rate_limit") -> AuditOutput:
+def _generate_mock_fallback(claim: ClaimInput, reason: str = "rate_limit", details: str = "") -> AuditOutput:
     """
     Generate mock audit output when external services are unavailable.
     Includes CLEAR messaging to inform the user this is mock data.
     """
     # Determine the reason message
     if reason == "rate_limit":
-        reason_msg = "⚠️ MOCK DATA: External service (Groq LLM) daily rate limit exceeded. This is simulated data for demonstration purposes only."
+        reason_msg = f"⚠️ MOCK DATA: External service (Groq/Gemini) rate limit exceeded. ({details})"
+    elif reason == "config_error":
+        reason_msg = f"⚠️ MOCK DATA: Configuration Error - {details}"
     else:
-        reason_msg = "⚠️ MOCK DATA: External services temporarily unavailable. This is simulated data for demonstration purposes only."
+        reason_msg = f"⚠️ MOCK DATA: External services temporarily unavailable. ({details})"
     
     # Generate mock citations with clear labeling
     mock_citations = [
