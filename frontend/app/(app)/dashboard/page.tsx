@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LayoutDashboard, FileText, CheckCircle2, TrendingUp, TrendingDown, Activity, PlayCircle, Plus, Upload, AlertCircle } from "lucide-react";
 
-const API_BASE = "http://localhost:8000/api";
+import { API_BASE } from "../../lib/api";
 
 interface Stat {
   label: string;

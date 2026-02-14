@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, FileText, Calendar, Building2, Package, CheckCircle, AlertCircle } from "lucide-react";
 
-const API_BASE = "http://localhost:8000/api";
+import { API_BASE } from "../../lib/api";
 
 interface Policy {
     policy_id: string;
@@ -178,10 +178,10 @@ export default function PoliciesPage() {
                                 onDrop={handleDrop}
                                 onClick={() => fileRef.current?.click()}
                                 className={`p-10 border-2 border-dashed rounded-xl text-center cursor-pointer transition-all ${dragging
-                                        ? "border-sky-500 bg-sky-50"
-                                        : selectedFile
-                                            ? "border-emerald-500 bg-emerald-50"
-                                            : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                    ? "border-sky-500 bg-sky-50"
+                                    : selectedFile
+                                        ? "border-emerald-500 bg-emerald-50"
+                                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                     }`}
                             >
                                 <div className="flex flex-col items-center gap-3">
@@ -231,8 +231,8 @@ export default function PoliciesPage() {
                             type="submit"
                             disabled={uploading || !selectedFile}
                             className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-lg font-bold text-white transition-all shadow-md ${uploading || !selectedFile
-                                    ? "bg-slate-300 cursor-not-allowed"
-                                    : "bg-sky-500 hover:bg-sky-600 hover:shadow-lg hover:-translate-y-0.5"
+                                ? "bg-slate-300 cursor-not-allowed"
+                                : "bg-sky-500 hover:bg-sky-600 hover:shadow-lg hover:-translate-y-0.5"
                                 }`}
                         >
                             {uploading ? (
@@ -279,8 +279,8 @@ export default function PoliciesPage() {
                                         </div>
                                         <span
                                             className={`px-2.5 py-1 rounded-full text-xs font-bold border ${policy.status === "active"
-                                                    ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-                                                    : "bg-slate-100 text-slate-600 border-slate-200"
+                                                ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+                                                : "bg-slate-100 text-slate-600 border-slate-200"
                                                 }`}
                                         >
                                             {policy.status}

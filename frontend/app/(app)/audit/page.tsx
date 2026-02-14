@@ -6,7 +6,7 @@ import type { ClaimInput, AuditOutput } from "../../../../shared/schemas";
 import AuditResult from "../../components/AuditResult";
 import { PlayCircle, Wand2, Calculator, Loader2, FileText } from "lucide-react";
 
-const API_BASE = "http://localhost:8000/api";
+import { API_BASE } from "../../lib/api";
 
 interface Policy {
     policy_id: string;

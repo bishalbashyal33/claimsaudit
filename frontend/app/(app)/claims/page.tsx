@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, Plus, Filter, FileText } from "lucide-react";
 
-const API_BASE = "http://localhost:8000/api";
+import { API_BASE } from "../../lib/api";
 
 interface Claim {
     claim_id: string;

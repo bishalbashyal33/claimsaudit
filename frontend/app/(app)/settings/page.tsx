@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Database, Zap, Cloud, Server, HardDrive, Settings as SettingsIcon, Save } from "lucide-react";
+import { API_BASE } from "../../lib/api";
 
 export default function SettingsPage() {
     const [health, setHealth] = useState<any>(null);
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/health")
+        fetch(`${API_BASE}/health`)
             .then((r) => r.json())
             .then(setHealth)
             .catch(() => setHealth({ status: "unreachable", integrations: {} }));
@@ -64,8 +65,8 @@ export default function SettingsPage() {
                                         {intg.envKey}
                                     </code>
                                     <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold ${connected
-                                            ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                                            : "bg-amber-100 text-amber-700 border border-amber-200"
+                                        ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                                        : "bg-amber-100 text-amber-700 border border-amber-200"
                                         }`}>
                                         <div className={`w-1.5 h-1.5 rounded-full ${connected ? "bg-emerald-500" : "bg-amber-500"
                                             }`} />
