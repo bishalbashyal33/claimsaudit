@@ -42,6 +42,7 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "https://*.vercel.app",
         "https://claimsaudit.bishalb.com",
+        "https://www.claimsaudit.bishalb.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],

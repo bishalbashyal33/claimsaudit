@@ -2,10 +2,14 @@
  * API service layer — all backend calls go through here.
  */
 
-export const API_BASE =
+const rawBase =
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_API_BASE_URL ||
     "http://localhost:8000/api";
+
+export const API_BASE = rawBase.replace(/\/$/, "").endsWith("/api")
+    ? rawBase.replace(/\/$/, "")
+    : `${rawBase.replace(/\/$/, "")}/api`;
 
 interface FetchOptions extends RequestInit {
     timeout?: number;
