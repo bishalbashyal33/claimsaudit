@@ -158,23 +158,12 @@ Calculate the final score and provide reasoning.
 def get_llm(temperature: float = 0.0):
     """
     Returns an LLM with fallback logic.
-    Primary: Groq (Llama 3.3 70B) if key is present.
-    Secondary: Google Gemini 1.5 Pro if key is present.
+    Primary: Google Gemini 1.5 Pro if key is present.
+    Secondary: Groq (Llama 3.3 70B) if key is present.
     """
     llms = []
     
-    # Try creating Groq if key exists
-    if settings.GROQ_API_KEY:
-        try:
-            llms.append(ChatGroq(
-                temperature=temperature, 
-                model_name="llama-3.3-70b-versatile", 
-                api_key=settings.GROQ_API_KEY
-            ))
-        except Exception as e:
-            print(f"Warning: Failed to initialize Groq: {e}")
-
-    # Try creating Gemini if key exists
+    # Try creating Gemini if key exists (PRIMARY)
     if settings.GOOGLE_API_KEY:
         try:
             llms.append(ChatGoogleGenerativeAI(
@@ -184,14 +173,26 @@ def get_llm(temperature: float = 0.0):
             ))
         except Exception as e:
             print(f"Warning: Failed to initialize Gemini: {e}")
+
+    # Try creating Groq if key exists (SECONDARY)
+    if settings.GROQ_API_KEY:
+        try:
+            llms.append(ChatGroq(
+                temperature=temperature, 
+                model_name="llama-3.3-70b-versatile", 
+                api_key=settings.GROQ_API_KEY
+            ))
+        except Exception as e:
+            print(f"Warning: Failed to initialize Groq: {e}")
             
     if not llms:
-        raise ValueError("Neither GROQ_API_KEY nor GOOGLE_API_KEY is configured.")
+        raise ValueError("Neither GOOGLE_API_KEY nor GROQ_API_KEY is configured.")
         
     primary = llms[0]
     fallbacks = llms[1:]
     
     if fallbacks:
+        # LangChain's with_fallbacks allows chaining multiple LLMs
         return primary.with_fallbacks(fallbacks)
     
     return primary
