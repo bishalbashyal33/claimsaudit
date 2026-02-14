@@ -2,16 +2,9 @@
 
 ![ClaimAudit Dashboard](resources/dashboard_screenshot.png)
 
-## System Architecture
+## Overview
 
-![Architecture Diagram](resources/architecture_diagram.png)
-
-This diagram illustrates the comprehensive flow of data through the ClaimAudit system:
-1.  **Frontend**: User submits claims or uploads policies.
-2.  **API Gateway**: FastAPI router handles requests and validation.
-3.  **Ingestion Service**: Processes PDF policies into vector embeddings.
-4.  **Audit Pipeline**: The LangGraph engine orchestrates the multi-step reasoning (Retrieve > Audit > Verify > Refine).
-5.  **LLM Layer**: Dynamically selects between Gemini and Groq for inference.
+![Claim Audit Architecture](resources/architecture_diagram_academic.png)
 
 ClaimAudit is a next-generation medical claim adjudication platform powered by **Agentic AI**. It uses advanced Retrieval-Augmented Generation (RAG) to autonomously audit medical claims against complex payer policies, providing definitive "Approve" or "Deny" recommendations with citations.
 
