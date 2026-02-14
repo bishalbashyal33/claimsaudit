@@ -94,10 +94,10 @@ export default function DashboardPage() {
         : "0.00";
 
       setStats([
-        { label: "Total Claims", value: totalClaims.toString(), change: "+12%", trend: "up", icon: FileText },
-        { label: "Audited Today", value: auditedToday.toString(), change: "+24%", trend: "up", icon: Activity },
-        { label: "Approval Rate", value: `${approvalRate}%`, change: "-2.1%", trend: "down", icon: CheckCircle2 },
-        { label: "Avg Confidence", value: avgConfidence, change: "+0.03", trend: "up", icon: TrendingUp },
+        { label: "Total Claims", value: totalClaims.toString(), change: "0%", trend: "neutral", icon: FileText },
+        { label: "Audited Today", value: auditedToday.toString(), change: "0%", trend: "neutral", icon: Activity },
+        { label: "Approval Rate", value: `${approvalRate}%`, change: "0%", trend: "neutral", icon: CheckCircle2 },
+        { label: "Avg Confidence", value: avgConfidence, change: "0", trend: "neutral", icon: TrendingUp },
       ]);
 
       // Get recent audits (last 5)
