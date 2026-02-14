@@ -51,8 +51,8 @@ export default function Sidebar() {
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                                    ? "bg-sky-50 text-sky-700"
-                                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                                ? "bg-sky-50 text-sky-700"
+                                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                                 }`}
                         >
                             <item.icon size={18} className={isActive ? "text-sky-600" : "text-slate-400"} />
@@ -77,17 +77,6 @@ export default function Sidebar() {
                         {item.label}
                     </Link>
                 ))}
-
-                {/* Status */}
-                <div className="mt-3 p-3 bg-white rounded-lg border border-slate-200 shadow-sm">
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-xs font-semibold text-slate-700">System Online</span>
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-medium">
-                        v0.1.0 · Mock Mode
-                    </div>
-                </div>
             </div>
         </aside>
     );

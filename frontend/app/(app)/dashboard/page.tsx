@@ -275,53 +275,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">System Health</h2>
-
-            {toggleError && (
-              <div className="mb-3 p-2.5 bg-red-50 border border-red-100 rounded-lg text-xs text-red-700 flex items-center gap-2">
-                <AlertCircle size={12} />
-                <span className="font-medium">{toggleError}</span>
-              </div>
-            )}
-
-            <div className="space-y-2.5">
-              {Object.entries(services).map(([key, status]) => (
-                <div key={key} className="flex justify-between items-center py-1">
-                  <span className="text-sm font-medium text-slate-600">
-                    {getServiceDisplayName(key)}
-                  </span>
-                  <div className="flex items-center gap-2.5">
-                    <button
-                      onClick={() => toggleService(key, status.enabled)}
-                      disabled={toggling === key}
-                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${status.enabled ? "bg-emerald-500" : "bg-slate-300"
-                        } ${toggling === key ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-90"}`}
-                      title={`Click to switch to ${status.enabled ? 'mock' : 'real'} mode`}
-                    >
-                      <span
-                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform shadow-sm ${status.enabled ? "translate-x-[18px]" : "translate-x-0.5"
-                          }`}
-                      />
-                    </button>
-                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide min-w-[38px]">
-                      {status.mode}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-100">
-              <div className="flex items-center justify-between py-1">
-                <span className="text-sm font-medium text-slate-600">Audit API</span>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide min-w-[38px]">Online</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
