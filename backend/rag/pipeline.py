@@ -158,25 +158,43 @@ Calculate the final score and provide reasoning.
 def get_llm(temperature: float = 0.0):
     """
     Returns an LLM with fallback logic.
-    Primary: Groq (Llama 3.3 70B)
-    Secondary: Google Gemini 1.5 Pro
+    Primary: Groq (Llama 3.3 70B) if key is present.
+    Secondary: Google Gemini 1.5 Pro if key is present.
     """
-    groq_llm = ChatGroq(
-        temperature=temperature, 
-        model_name="llama-3.3-70b-versatile", 
-        api_key=settings.GROQ_API_KEY
-    )
+    llms = []
     
-    # Check if Google API Key is available for fallback
+    # Try creating Groq if key exists
+    if settings.GROQ_API_KEY:
+        try:
+            llms.append(ChatGroq(
+                temperature=temperature, 
+                model_name="llama-3.3-70b-versatile", 
+                api_key=settings.GROQ_API_KEY
+            ))
+        except Exception as e:
+            print(f"Warning: Failed to initialize Groq: {e}")
+
+    # Try creating Gemini if key exists
     if settings.GOOGLE_API_KEY:
-        gemini_llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-pro",
-            temperature=temperature,
-            google_api_key=settings.GOOGLE_API_KEY
-        )
-        return groq_llm.with_fallbacks([gemini_llm])
+        try:
+            llms.append(ChatGoogleGenerativeAI(
+                model="gemini-1.5-pro",
+                temperature=temperature,
+                google_api_key=settings.GOOGLE_API_KEY
+            ))
+        except Exception as e:
+            print(f"Warning: Failed to initialize Gemini: {e}")
+            
+    if not llms:
+        raise ValueError("Neither GROQ_API_KEY nor GOOGLE_API_KEY is configured.")
+        
+    primary = llms[0]
+    fallbacks = llms[1:]
     
-    return groq_llm
+    if fallbacks:
+        return primary.with_fallbacks(fallbacks)
+    
+    return primary
 
 # --- Node Implementations ---
 
@@ -418,8 +436,8 @@ def create_audit_graph():
 
 async def run_rag_pipeline(claim: ClaimInput) -> AuditOutput:
     """Entry point for the state-of-the-art audit pipeline."""
-    if not settings.GROQ_API_KEY:
-        raise ValueError("GROQ_API_KEY not configured")
+    if not settings.GROQ_API_KEY and not settings.GOOGLE_API_KEY:
+        raise ValueError("Neither GROQ_API_KEY nor GOOGLE_API_KEY is configured")
 
     app = create_audit_graph()
     

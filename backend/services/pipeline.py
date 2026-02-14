@@ -34,9 +34,9 @@ async def run_audit_pipeline(claim: ClaimInput) -> AuditOutput:
     Raises:
         ValueError: If GROQ_API_KEY is not set or no policies are uploaded
     """
-    if not settings.GROQ_API_KEY:
+    if not settings.GROQ_API_KEY and not settings.GOOGLE_API_KEY:
         raise ValueError(
-            "GROQ_API_KEY not configured. Please set GROQ_API_KEY in your .env file to use the RAG pipeline."
+            "No LLM provider configured. Please set GROQ_API_KEY or GOOGLE_API_KEY in your environment."
         )
     
     # Try to call the real RAG pipeline
