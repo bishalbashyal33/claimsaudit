@@ -14,8 +14,10 @@ RUN apt-get update && apt-get install -y \
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Pre-download the embedding model to avoid timeout on startup
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
 # Copy the backend and shared directories
-# Note: shared is needed because backend imports from it
 COPY backend/ ./backend/
 COPY shared/ ./shared/
 
