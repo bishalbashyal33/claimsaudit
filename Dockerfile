@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Set cache dir for models to be inside the image
+ENV SENTENCE_TRANSFORMERS_HOME=/app/model_cache
+
 # Pre-download the embedding model to avoid timeout on startup
 RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
 
