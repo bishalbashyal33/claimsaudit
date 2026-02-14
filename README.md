@@ -2,11 +2,26 @@
 
 ![ClaimAudit Dashboard](resources/dashboard_screenshot.png)
 
-## Overview
+## System Architecture
 
-![Claim Audit Architecture](resources/architecture_diagram_academic.png)
+![Claim Audit Architecture](resources/architecture_diagram_v2.png)
 
-ClaimAudit is a next-generation medical claim adjudication platform powered by **Agentic AI**. It uses advanced Retrieval-Augmented Generation (RAG) to autonomously audit medical claims against complex payer policies, providing definitive "Approve" or "Deny" recommendations with citations.
+This diagram illustrates the end-to-end flow of the ClaimAudit system, from data ingestion to final adjudication:
+
+1.  **Policy Ingestion (The Foundation)**:
+    -   Admin uploads a policy PDF (e.g., "Medicare NCD 240.4").
+    -   **Ingestion Pipeline** extracts text, cleans it, and splits it into semantic chunks.
+    -   **Local Embeddings**: A Sentence-Transformer model (running directly in the container) converts these chunks into vector embeddings.
+    -   **Vector Store**: embeddings are stored in **Qdrant** for semantic retrieval.
+
+2.  **Audit Operations (The Core)**:
+    -   **API Gateway**: A FastAPI service on **Google Cloud Run** receives the claim.
+    -   **LangGraph Orchestrator**: The claim enters a multi-step loop:
+        -   *Retrieve*: Fetches relevant policy chunks from Qdrant.
+        -   *Audit*: LLM drafts an initial decision.
+        -   *Verify*: A second LLM agent checks the draft against the raw text for hallucinations.
+        -   *Refine*: If errors are found, the draft is corrected.
+    -   **Dual-Engine AI**: The system dynamically uses **Google Gemini 1.5 Pro** or **Groq Llama 3** based on availability and load.
 
 Traditional claim auditing is manual, error-prone, and slow. ClaimAudit automates this by enforcing policy rules with strict verification steps, significantly reducing administrative overhead and enhancing accuracy.
 
