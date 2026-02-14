@@ -72,4 +72,4 @@ gcloud run deploy claimsaudit --source .
 ```
 
 ---
-*Built with ❤️ by Bishal Bashyal*
+
