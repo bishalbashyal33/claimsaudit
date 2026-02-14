@@ -23,6 +23,9 @@ class Settings:
     # Groq
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 
+    # Google (Gemini Fallback)
+    GOOGLE_API_KEY: str = os.getenv("GOOGLE_API_KEY", "")
+
     # Qdrant
     QDRANT_URL: str = os.getenv("QDRANT_URL", "")
     QDRANT_API_KEY: str = os.getenv("QDRANT_API_KEY", "")

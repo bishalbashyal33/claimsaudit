@@ -13,6 +13,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from langchain_groq import ChatGroq
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
@@ -152,6 +153,31 @@ Calculate the final score and provide reasoning.
 {format_instructions}
 """
 
+# --- LLM Factory with Fallback ---
+
+def get_llm(temperature: float = 0.0):
+    """
+    Returns an LLM with fallback logic.
+    Primary: Groq (Llama 3.3 70B)
+    Secondary: Google Gemini 1.5 Pro
+    """
+    groq_llm = ChatGroq(
+        temperature=temperature, 
+        model_name="llama-3.3-70b-versatile", 
+        api_key=settings.GROQ_API_KEY
+    )
+    
+    # Check if Google API Key is available for fallback
+    if settings.GOOGLE_API_KEY:
+        gemini_llm = ChatGoogleGenerativeAI(
+            model="gemini-1.5-pro",
+            temperature=temperature,
+            google_api_key=settings.GOOGLE_API_KEY
+        )
+        return groq_llm.with_fallbacks([gemini_llm])
+    
+    return groq_llm
+
 # --- Node Implementations ---
 
 async def retrieve_node(state: AuditState) -> Dict[str, Any]:
@@ -198,7 +224,7 @@ async def audit_node(state: AuditState) -> Dict[str, Any]:
     if not state["context_str"] or state["context_str"] == "NO POLICY DATA FOUND.":
         raise ValueError("Cannot audit without policy context.")
         
-    llm = ChatGroq(temperature=0.1, model_name="llama-3.3-70b-versatile", api_key=settings.GROQ_API_KEY)
+    llm = get_llm(temperature=0.1)
     parser = JsonOutputParser(pydantic_object=LLMAuditDraft)
     
     prompt = ChatPromptTemplate.from_template(AUDITOR_PROMPT)
@@ -219,7 +245,7 @@ async def audit_node(state: AuditState) -> Dict[str, Any]:
 
 async def verify_node(state: AuditState) -> Dict[str, Any]:
     """Verify the audit draft for hallucinations."""
-    llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile", api_key=settings.GROQ_API_KEY)
+    llm = get_llm(temperature=0)
     parser = JsonOutputParser(pydantic_object=LLMVerification)
     
     prompt = ChatPromptTemplate.from_template(VERIFIER_PROMPT)
@@ -235,7 +261,7 @@ async def verify_node(state: AuditState) -> Dict[str, Any]:
 
 async def refine_node(state: AuditState) -> Dict[str, Any]:
     """Refine the audit based on verification feedback."""
-    llm = ChatGroq(temperature=0.1, model_name="llama-3.3-70b-versatile", api_key=settings.GROQ_API_KEY)
+    llm = get_llm(temperature=0.1)
     parser = JsonOutputParser(pydantic_object=LLMAuditDraft)
     
     prompt = ChatPromptTemplate.from_template(REFINER_PROMPT)
@@ -257,7 +283,7 @@ async def refine_node(state: AuditState) -> Dict[str, Any]:
 
 async def score_node(state: AuditState) -> Dict[str, Any]:
     """Calculate a robust confidence score based on the rubric."""
-    llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile", api_key=settings.GROQ_API_KEY)
+    llm = get_llm(temperature=0)
     parser = JsonOutputParser(pydantic_object=LLMConfidenceScorer)
     
     prompt = ChatPromptTemplate.from_template(SCORER_PROMPT)

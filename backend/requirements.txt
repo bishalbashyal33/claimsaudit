@@ -9,6 +9,7 @@ python-multipart==0.0.9
 langgraph==0.2.0
 langchain==0.2.16
 langchain-groq==0.1.9
+langchain-google-genai==1.0.10
 langchain-core==0.2.38
 
 # Vector DB
